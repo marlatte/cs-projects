@@ -1,21 +1,20 @@
 function merge(left, right) {
-	let counterL = 0,
-		counterR = 0,
-		counterM = 0,
+	let i = 0,
+		j = 0,
 		output = [];
 
-	while (counterL < left.length || counterR < right.length) {
-		if (left[counterL] <= right[counterR]) {
-			output[counterM++] = left[counterL++];
+	while (i < left.length && j < right.length) {
+		if (left[i] <= right[j]) {
+			output.push(left[i++]);
 		} else {
-			output[counterM++] = right[counterR++];
+			output.push(right[j++]);
 		}
 	}
-	for (; counterL < left.length; counterL++) {
-		output[counterM++] = left[counterL];
+	for (; i < left.length; i++) {
+		output.push(left[i]);
 	}
-	for (; counterR < right.length; counterR++) {
-		output[counterM++] = right[counterR];
+	for (; j < right.length; j++) {
+		output.push(right[j]);
 	}
 	return output;
 }
@@ -25,15 +24,22 @@ function mergeSort(arr) {
 		return arr;
 	} else {
 		const midPoint = Math.floor(arr.length / 2);
-		// sort left half
-		const leftHalf = arr.slice(0, midPoint);
-		mergeSort(leftHalf);
-
-		// sort right half
-		const rightHalf = arr.slice(midPoint + 1);
-		mergeSort(rightHalf);
-
-		// Merge
-		return merge(leftHalf, rightHalf);
+		let leftHalf = arr.slice(0, midPoint);
+		let rightHalf = arr.slice(midPoint);
+		return merge(mergeSort(leftHalf), mergeSort(rightHalf));
 	}
 }
+
+// Test with random numbers
+function getRandomArray(len) {
+	let output = [];
+	for (let i = 0; i < len; i++) {
+		output.push(Math.floor(Math.random() * 1000));
+	}
+	return output;
+}
+
+const testArray = [9, 3, 7, 5, 6, 4, 8, 2];
+const randomArray = getRandomArray(20);
+console.log(mergeSort(testArray));
+console.log(mergeSort(randomArray));
