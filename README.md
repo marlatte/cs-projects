@@ -1,5 +1,13 @@
-# Recursion
+# Computer Science Projects
 
-Recursive algorithms for the Fibonacci Sequence and Merge Sort.
+## Recursion
 
-Original requirements can be found on the [Odin Project Website](https://www.theodinproject.com/lessons/javascript-recursion).
+Recursive algorithms for the Fibonacci Sequence and Merge Sort. See [original requirements](https://www.theodinproject.com/lessons/javascript-recursion).
+
+## Linked Lists
+
+Build a linked list data structure with methods for writing, reading, manipulating, and removing data. See [original requirements](https://www.theodinproject.com/lessons/javascript-linked-lists).
+
+## Binary Search Tree
+
+TBD.
