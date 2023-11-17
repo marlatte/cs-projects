@@ -1,5 +1,5 @@
 const LinkedList = () => {
-	let head = null;
+	let _head = null;
 	let _size = 0;
 
 	const _NodeFactory = (value = null, next = null) => {
@@ -10,7 +10,7 @@ const LinkedList = () => {
 	};
 
 	const tail = () => {
-		let node = head;
+		let node = _head;
 		while (node.next) {
 			node = node.next;
 		}
@@ -19,8 +19,8 @@ const LinkedList = () => {
 
 	const append = (value) => {
 		const temp = _NodeFactory(value);
-		if (!head) {
-			head = temp;
+		if (!_head) {
+			_head = temp;
 		} else {
 			let node = tail();
 			node.next = temp;
@@ -30,18 +30,18 @@ const LinkedList = () => {
 
 	const prepend = (value) => {
 		const temp = _NodeFactory(value);
-		if (!head) {
-			head = temp;
+		if (!_head) {
+			_head = temp;
 		} else {
-			temp.next = head;
-			head = temp;
+			temp.next = _head;
+			_head = temp;
 		}
 		_size++;
 	};
 
 	const at = (index) => {
 		if (index > 0 && index < _size) {
-			let node = head;
+			let node = _head;
 			for (let i = 0; i < index; i++) {
 				node = node.next;
 			}
@@ -52,7 +52,7 @@ const LinkedList = () => {
 	};
 
 	const pop = () => {
-		let node = head;
+		let node = _head;
 		while (node.next.next) {
 			node = node.next;
 		}
@@ -61,7 +61,7 @@ const LinkedList = () => {
 	};
 
 	const contains = (target) => {
-		let node = head;
+		let node = _head;
 		while (node) {
 			if (node.value === target) return true;
 			node = node.next;
@@ -70,7 +70,7 @@ const LinkedList = () => {
 	};
 
 	const find = (target) => {
-		let node = head;
+		let node = _head;
 		let i = 0;
 		while (node) {
 			if (node.value === target) return i;
@@ -81,7 +81,7 @@ const LinkedList = () => {
 	};
 
 	const listToString = () => {
-		let node = head;
+		let node = _head;
 		let str = '';
 		while (node) {
 			str += `( ${node.value} ) -> \n`;
@@ -93,7 +93,7 @@ const LinkedList = () => {
 
 	const insertAt = (value, index) => {
 		if (index > 0 && index < _size) {
-			let node = head;
+			let node = _head;
 			for (let i = 0; i < index - 1; i++) {
 				node = node.next;
 			}
@@ -107,7 +107,7 @@ const LinkedList = () => {
 
 	const removeAt = (index) => {
 		if (index > 0 && index < _size) {
-			let node = head;
+			let node = _head;
 			for (let i = 0; i < index - 1; i++) {
 				node = node.next;
 			}
@@ -122,7 +122,7 @@ const LinkedList = () => {
 		append,
 		prepend,
 		size: () => _size,
-		head,
+		head: () => _head,
 		tail,
 		at,
 		pop,
@@ -173,3 +173,5 @@ list.listToString();
 list.insertAt('insert test', 3);
 console.log('\nLength: ' + list.size());
 list.listToString();
+
+console.log(`List starts at value: ${list.head().value}`);
