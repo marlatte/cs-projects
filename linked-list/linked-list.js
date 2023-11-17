@@ -67,12 +67,31 @@ const LinkedList = () => {
 		console.log('Last item removed from list.');
 	};
 
-	const contains = (value) => {
-		// loops through, returns T/F if list contains that value
+	const contains = (target) => {
+		let node = head;
+		while (node) {
+			if (node.value === target) {
+				return true;
+			} else {
+				node = node.nextNode;
+			}
+			return false;
+		}
 	};
 
-	const find = (value) => {
+	const find = (target) => {
 		// returns index of value, or null if not present.
+		let node = head;
+		let i = 0;
+		while (node) {
+			if (node.value === target) {
+				return i;
+			} else {
+				node = node.nextNode;
+				i++;
+			}
+		}
+		return null;
 	};
 
 	const listToString = () => {
@@ -129,3 +148,9 @@ console.log(`Node at index ${testIndex}: ${list.at(testIndex)}`);
 list.pop();
 console.log('\nLength: ' + list.size());
 list.listToString();
+
+console.log(list.contains('pre 1'));
+console.log(list.contains('pre 2'));
+
+console.log(list.find('post 2'));
+console.log(list.find('pre 2'));
