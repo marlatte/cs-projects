@@ -9,15 +9,20 @@ const LinkedList = () => {
 		};
 	};
 
+	const tail = () => {
+		let node = head;
+		while (node.next) {
+			node = node.next;
+		}
+		return node;
+	};
+
 	const append = (value) => {
 		const temp = _NodeFactory(value);
 		if (!head) {
 			head = temp;
 		} else {
-			let node = head;
-			while (node.next) {
-				node = node.next;
-			}
+			let node = tail();
 			node.next = temp;
 		}
 		_size++;
@@ -34,23 +39,15 @@ const LinkedList = () => {
 		_size++;
 	};
 
-	const tail = () => {
-		let node = head;
-		while (node.next) {
-			node = node.next;
-		}
-		return node.value;
-	};
-
 	const at = (index) => {
-		if (index < _size) {
+		if (index > 0 && index < _size) {
 			let node = head;
 			for (let i = 0; i < index; i++) {
 				node = node.next;
 			}
 			return node.value;
 		} else {
-			throw new Error(`List has fewer than ${index} items.`);
+			throw new Error(`Invalid ${index}.`);
 		}
 	};
 
@@ -66,25 +63,19 @@ const LinkedList = () => {
 	const contains = (target) => {
 		let node = head;
 		while (node) {
-			if (node.value === target) {
-				return true;
-			} else {
-				node = node.next;
-			}
-			return false;
+			if (node.value === target) return true;
+			node = node.next;
 		}
+		return false;
 	};
 
 	const find = (target) => {
 		let node = head;
 		let i = 0;
 		while (node) {
-			if (node.value === target) {
-				return i;
-			} else {
-				node = node.next;
-				i++;
-			}
+			if (node.value === target) return i;
+			node = node.next;
+			i++;
 		}
 		return null;
 	};
@@ -101,35 +92,29 @@ const LinkedList = () => {
 	};
 
 	const insertAt = (value, index) => {
-		const temp = _NodeFactory(value);
-		if (index < _size) {
-			let before = head;
+		if (index > 0 && index < _size) {
+			let node = head;
 			for (let i = 0; i < index - 1; i++) {
-				before = before.next;
+				node = node.next;
 			}
-			const after = before.next;
-			temp.next = after;
-			before.next = temp;
-
+			const temp = _NodeFactory(value, node.next);
+			node.next = temp;
 			_size++;
 		} else {
-			throw new Error(`List has fewer than ${index} items.`);
+			throw new Error(`Invalid ${index}. Try method: append()`);
 		}
 	};
 
 	const removeAt = (index) => {
-		if (index < _size) {
-			let before = head;
+		if (index > 0 && index < _size) {
+			let node = head;
 			for (let i = 0; i < index - 1; i++) {
-				before = before.next;
+				node = node.next;
 			}
-			const target = before.next;
-			const after = target.next;
-			before.next = after;
-			target.next = null;
+			node.next = node.next.next;
 			_size--;
 		} else {
-			throw new Error(`List has fewer than ${index} items.`);
+			throw new Error(`Invalid ${index}.`);
 		}
 	};
 
@@ -162,7 +147,7 @@ console.log('\nLength: ' + list.size());
 
 list.listToString();
 
-console.log('Tail value: ' + list.tail());
+console.log('Tail value: ' + list.tail().value);
 
 let testIndex = 3;
 console.log(`Node at index ${testIndex}: ${list.at(testIndex)}`);
