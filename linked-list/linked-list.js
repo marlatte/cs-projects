@@ -2,10 +2,10 @@ const LinkedList = () => {
 	let head = null;
 	let _size = 0;
 
-	const _NodeFactory = (value = null, nextNode = null) => {
+	const _NodeFactory = (value = null, next = null) => {
 		return {
 			value,
-			nextNode,
+			next,
 		};
 	};
 
@@ -15,13 +15,12 @@ const LinkedList = () => {
 			head = temp;
 		} else {
 			let node = head;
-			while (node.nextNode) {
-				node = node.nextNode;
+			while (node.next) {
+				node = node.next;
 			}
-			node.nextNode = temp;
+			node.next = temp;
 		}
 		_size++;
-		console.log(`${value} added to list END.`);
 	};
 
 	const prepend = (value) => {
@@ -29,27 +28,25 @@ const LinkedList = () => {
 		if (!head) {
 			head = temp;
 		} else {
-			temp.nextNode = head;
+			temp.next = head;
 			head = temp;
 		}
 		_size++;
-		console.log(`${value} added to list START.`);
 	};
 
 	const tail = () => {
 		let node = head;
-		while (node.nextNode) {
-			node = node.nextNode;
+		while (node.next) {
+			node = node.next;
 		}
 		return node.value;
 	};
 
 	const at = (index) => {
-		// returns item at index
 		if (index < _size) {
 			let node = head;
 			for (let i = 0; i < index; i++) {
-				node = node.nextNode;
+				node = node.next;
 			}
 			return node.value;
 		} else {
@@ -59,12 +56,11 @@ const LinkedList = () => {
 
 	const pop = () => {
 		let node = head;
-		while (node.nextNode.nextNode) {
-			node = node.nextNode;
+		while (node.next.next) {
+			node = node.next;
 		}
-		node.nextNode = null;
+		node.next = null;
 		_size--;
-		console.log('Last item removed from list.');
 	};
 
 	const contains = (target) => {
@@ -73,21 +69,20 @@ const LinkedList = () => {
 			if (node.value === target) {
 				return true;
 			} else {
-				node = node.nextNode;
+				node = node.next;
 			}
 			return false;
 		}
 	};
 
 	const find = (target) => {
-		// returns index of value, or null if not present.
 		let node = head;
 		let i = 0;
 		while (node) {
 			if (node.value === target) {
 				return i;
 			} else {
-				node = node.nextNode;
+				node = node.next;
 				i++;
 			}
 		}
@@ -99,18 +94,43 @@ const LinkedList = () => {
 		let str = '';
 		while (node) {
 			str += `( ${node.value} ) -> \n`;
-			node = node.nextNode;
+			node = node.next;
 		}
 		str += '  null';
 		console.log(str);
 	};
 
 	const insertAt = (value, index) => {
-		// don't forget to reorg links of surrounding nodes
+		const temp = _NodeFactory(value);
+		if (index < _size) {
+			let before = head;
+			for (let i = 0; i < index - 1; i++) {
+				before = before.next;
+			}
+			const after = before.next;
+			temp.next = after;
+			before.next = temp;
+
+			_size++;
+		} else {
+			throw new Error(`List has fewer than ${index} items.`);
+		}
 	};
 
 	const removeAt = (index) => {
-		// don't forget to reorg links of surrounding nodes
+		if (index < _size) {
+			let before = head;
+			for (let i = 0; i < index - 1; i++) {
+				before = before.next;
+			}
+			const target = before.next;
+			const after = target.next;
+			before.next = after;
+			target.next = null;
+			_size--;
+		} else {
+			throw new Error(`List has fewer than ${index} items.`);
+		}
 	};
 
 	return {
@@ -135,6 +155,8 @@ list.append('post 1');
 list.append('post 2');
 list.prepend('pre 1');
 list.append('post 3');
+list.append('post 4');
+list.append('post 5');
 
 console.log('\nLength: ' + list.size());
 
@@ -149,8 +171,20 @@ list.pop();
 console.log('\nLength: ' + list.size());
 list.listToString();
 
-console.log(list.contains('pre 1'));
-console.log(list.contains('pre 2'));
+let contains1 = 'pre 1';
+let contains2 = 'pre 2';
+console.log(`List has value "${contains1}": ${list.contains(contains1)}`);
+console.log(`List has value "${contains2}": ${list.contains(contains2)}`);
 
-console.log(list.find('post 2'));
-console.log(list.find('pre 2'));
+let find1 = 'post 2';
+let find2 = 'pre 2';
+console.log(`Index of value "${find1}": ${list.find(find1)}`);
+console.log(`Index of value "${find2}": ${list.find(find2)}`);
+
+list.removeAt(3);
+console.log('\nLength: ' + list.size());
+list.listToString();
+
+list.insertAt('insert test', 3);
+console.log('\nLength: ' + list.size());
+list.listToString();
