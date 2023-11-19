@@ -70,12 +70,88 @@ function TreeFactory(arr) {
 		return node ? node : `Node with key "${key}" not found.`;
 	};
 
+	const levelOrder = (cb) => {
+		if (!root) return;
+		const Q = [];
+		const output = [];
+		Q.push(root);
+		while (!!Q.length) {
+			const current = Q.shift();
+			if (current.left) Q.push(current.left);
+			if (current.right) Q.push(current.right);
+			if (cb) {
+				cb(current);
+			} else {
+				output.push(current.data);
+			}
+		}
+		if (!cb) return output;
+	};
+
+	const preOrder = (cb, node = root) => {
+		if (!node) return;
+		if (!cb) {
+			const output = [];
+			const spread = [
+				node.data,
+				preOrder(cb, node.left),
+				preOrder(cb, node.right),
+			];
+			output.push(...spread);
+			return output.filter((val) => val).flat();
+		} else {
+			cb(node);
+			preOrder(cb, node.left);
+			preOrder(cb, node.right);
+		}
+	};
+
+	const inOrder = (cb, node = root) => {
+		if (!node) return;
+		if (!cb) {
+			const output = [];
+			const spread = [
+				inOrder(cb, node.left),
+				node.data,
+				inOrder(cb, node.right),
+			];
+			output.push(...spread);
+			return output.filter((val) => val).flat();
+		} else {
+			inOrder(cb, node.left);
+			cb(node);
+			inOrder(cb, node.right);
+		}
+	};
+
+	const postOrder = (cb, node = root) => {
+		if (!node) return;
+		if (!cb) {
+			const output = [];
+			const spread = [
+				postOrder(cb, node.left),
+				postOrder(cb, node.right),
+				node.data,
+			];
+			output.push(...spread);
+			return output.filter((val) => val).flat();
+		} else {
+			postOrder(cb, node.left);
+			postOrder(cb, node.right);
+			cb(node);
+		}
+	};
+
 	return {
 		root,
 		printTree: () => prettyPrint(root),
 		insert,
 		find,
 		remove,
+		levelOrder,
+		preOrder,
+		inOrder,
+		postOrder,
 	};
 }
 
@@ -117,7 +193,7 @@ console.log('\nTest Tree from: ');
 console.log(testArray);
 testTree.printTree();
 
-const randomArray = arrayGenerator(40);
+const randomArray = arrayGenerator(10);
 const randomTree = TreeFactory(randomArray);
 console.log('\nRandom Tree from:');
 console.log(randomArray);
