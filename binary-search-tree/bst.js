@@ -142,6 +142,14 @@ function TreeFactory(arr) {
 		}
 	};
 
+	const height = (targetNode) => {};
+
+	const depth = (targetNode) => {};
+
+	const isBalanced = () => {};
+
+	const rebalance = () => {};
+
 	return {
 		root,
 		printTree: () => prettyPrint(root),
