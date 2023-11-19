@@ -9,33 +9,65 @@ function NodeFactory(data) {
 function TreeFactory(arr) {
 	const root = buildTree(arr);
 
-	const insert = (value, node = root) => {
+	const insert = (key, node = root) => {
+		if (isNaN(key)) return 'Please enter a valid key';
 		if (!node) {
-			node = NodeFactory(value);
-		} else if (value < node.data) {
-			node.left = insert(value, node.left);
-		} else if (value > node.data) {
-			node.right = insert(value, node.right);
+			node = NodeFactory(key);
+		} else if (key < node.data) {
+			node.left = insert(key, node.left);
+		} else if (key > node.data) {
+			node.right = insert(key, node.right);
 		}
 		return node;
 	};
 
-	const remove = (value, node = root) => {};
+	const remove = (key, node = root) => {
+		if (!node || isNaN(key)) return node;
 
-	const find = (value) => {
-		if (value == undefined || isNaN(value)) {
+		if (key < node.data) {
+			node.left = remove(key, node.left);
+			return node;
+		} else if (key > node.data) {
+			node.right = remove(key, node.right);
+			return node;
+		}
+
+		if (!node.left || !node.right) {
+			const temp = !node.left ? node.right : node.left;
+			delete node;
+			return temp;
+		} else {
+			let parent = node;
+			let replacement = node.right;
+			while (replacement.left) {
+				parent = replacement;
+				replacement = replacement.left;
+			}
+			if (parent !== node) {
+				parent.left = replacement.right;
+			} else {
+				parent.right = replacement.right;
+			}
+			node.data = replacement.data;
+			delete replacement;
+			return node;
+		}
+	};
+
+	const find = (key) => {
+		if (isNaN(key)) {
 			return 'Please enter a valid key';
 		}
 		let node = root;
-		while (node && value !== node.data) {
-			if (value < node.data) {
+		while (node && key !== node.data) {
+			if (key < node.data) {
 				node = node.left;
-			} else if (value > node.data) {
+			} else if (key > node.data) {
 				node = node.right;
 			}
 		}
 
-		return node ? node : `Node with value "${value}" not found.`;
+		return node ? node : `Node with key "${key}" not found.`;
 	};
 
 	return {
@@ -43,6 +75,7 @@ function TreeFactory(arr) {
 		printTree: () => prettyPrint(root),
 		insert,
 		find,
+		remove,
 	};
 }
 
@@ -84,7 +117,7 @@ console.log('\nTest Tree from: ');
 console.log(testArray);
 testTree.printTree();
 
-const randomArray = arrayGenerator(11);
+const randomArray = arrayGenerator(40);
 const randomTree = TreeFactory(randomArray);
 console.log('\nRandom Tree from:');
 console.log(randomArray);
