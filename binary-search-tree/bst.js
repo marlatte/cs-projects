@@ -8,6 +8,7 @@ function NodeFactory(data) {
 
 function TreeFactory(arr) {
 	const root = buildTree(arr);
+
 	const insert = (value, node = root) => {
 		if (!node) {
 			node = NodeFactory(value);
@@ -18,10 +19,30 @@ function TreeFactory(arr) {
 		}
 		return node;
 	};
+
+	const remove = (value, node = root) => {};
+
+	const find = (value) => {
+		if (value == undefined || isNaN(value)) {
+			return 'Please enter a valid key';
+		}
+		let node = root;
+		while (node && value !== node.data) {
+			if (value < node.data) {
+				node = node.left;
+			} else if (value > node.data) {
+				node = node.right;
+			}
+		}
+
+		return node ? node : `Node with value "${value}" not found.`;
+	};
+
 	return {
 		root,
 		printTree: () => prettyPrint(root),
 		insert,
+		find,
 	};
 }
 
