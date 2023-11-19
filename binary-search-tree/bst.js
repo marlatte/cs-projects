@@ -8,9 +8,20 @@ function NodeFactory(data) {
 
 function TreeFactory(arr) {
 	const root = buildTree(arr);
+	const insert = (value, node = root) => {
+		if (!node) {
+			node = NodeFactory(value);
+		} else if (value < node.data) {
+			node.left = insert(value, node.left);
+		} else if (value > node.data) {
+			node.right = insert(value, node.right);
+		}
+		return node;
+	};
 	return {
 		root,
 		printTree: () => prettyPrint(root),
+		insert,
 	};
 }
 
@@ -46,7 +57,7 @@ function arrayGenerator(len) {
 	return [...output].sort((a, b) => a - b);
 }
 
-const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11];
 const testTree = TreeFactory(testArray);
 console.log('\nTest Tree from: ');
 console.log(testArray);
