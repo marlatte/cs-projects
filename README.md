@@ -10,4 +10,18 @@ Build a linked list data structure with methods for writing, reading, manipulati
 
 ## Binary Search Tree
 
-TBD.
+Build a balanced BST from an array. See [original requirements](https://www.theodinproject.com/lessons/javascript-binary-search-trees).
+Include the following methods to display and manipulate the tree:
+
+-   `printTree()`
+-   `insert()`
+-   `find()`
+-   `remove()`
+-   `levelOrder()`
+-   `preOrder()`
+-   `inOrder()`
+-   `postOrder()`
+-   `height()`
+-   `depth()`
+-   `isBalanced()`
+-   `rebalance()`
