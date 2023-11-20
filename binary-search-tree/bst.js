@@ -32,7 +32,9 @@ function TreeFactory(arr) {
 			: Math.max(leftHeight, rightHeight) + 1;
 	};
 
-	let root = _buildTree(arr);
+	// Remove duplicates and sort array
+	const sorted = new Set(arr.sort((a, b) => a - b));
+	let root = _buildTree([...sorted]);
 
 	const insert = (key, node = root) => {
 		if (isNaN(key)) return 'Please enter a valid key';
@@ -205,11 +207,11 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 };
 
 function arrayGenerator(len) {
-	const output = new Set();
-	while (output.size < len) {
-		output.add(Math.floor(Math.random() * 100) + 1);
+	const output = [];
+	while (output.length < len) {
+		output.push(Math.floor(Math.random() * 100) + 1);
 	}
-	return [...output].sort((a, b) => a - b);
+	return output;
 }
 
 function createTestTree() {
