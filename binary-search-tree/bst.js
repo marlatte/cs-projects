@@ -1,18 +1,43 @@
-function NodeFactory(data) {
-	return {
-		data,
-		left: null,
-		right: null,
-	};
-}
-
 function TreeFactory(arr) {
-	const root = buildTree(arr);
+	function _NodeFactory(data) {
+		return {
+			data,
+			left: null,
+			right: null,
+		};
+	}
+
+	function _buildTree(arr) {
+		if (!arr.length) return null;
+		const mid = Math.floor(arr.length / 2);
+		const node = _NodeFactory(arr[mid]);
+
+		node.left = _buildTree(arr.slice(0, mid));
+		node.right = _buildTree(arr.slice(mid + 1));
+
+		return node;
+	}
+
+	const _balanceHeight = (node = root) => {
+		if (!node) return 0;
+
+		const leftHeight = _balanceHeight(node.left);
+		if (leftHeight === -1) return -1;
+
+		const rightHeight = _balanceHeight(node.right);
+		if (rightHeight === -1) return -1;
+
+		return Math.abs(leftHeight - rightHeight) > 1
+			? -1
+			: Math.max(leftHeight, rightHeight) + 1;
+	};
+
+	const root = _buildTree(arr);
 
 	const insert = (key, node = root) => {
 		if (isNaN(key)) return 'Please enter a valid key';
 		if (!node) {
-			node = NodeFactory(key);
+			node = _NodeFactory(key);
 		} else if (key < node.data) {
 			node.left = insert(key, node.left);
 		} else if (key > node.data) {
@@ -156,7 +181,9 @@ function TreeFactory(arr) {
 		return find(targetNode.data, true);
 	};
 
-	const isBalanced = () => {};
+	const isBalanced = () => {
+		return _balanceHeight() !== -1;
+	};
 
 	const rebalance = () => {};
 
@@ -172,18 +199,8 @@ function TreeFactory(arr) {
 		postOrder,
 		height,
 		depth,
+		isBalanced,
 	};
-}
-
-function buildTree(arr) {
-	if (!arr.length) return null;
-	const mid = Math.floor(arr.length / 2);
-	const node = NodeFactory(arr[mid]);
-
-	node.left = buildTree(arr.slice(0, mid));
-	node.right = buildTree(arr.slice(mid + 1));
-
-	return node;
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -207,14 +224,14 @@ function arrayGenerator(len) {
 	return [...output].sort((a, b) => a - b);
 }
 
-const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11];
+const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const testTree = TreeFactory(testArray);
 console.log('\nTest Tree from: ');
 console.log(testArray);
 testTree.printTree();
 
-const randomArray = arrayGenerator(10);
-const randomTree = TreeFactory(randomArray);
-console.log('\nRandom Tree from:');
-console.log(randomArray);
-randomTree.printTree();
+// const randomArray = arrayGenerator(10);
+// const randomTree = TreeFactory(randomArray);
+// console.log('\nRandom Tree from:');
+// console.log(randomArray);
+// randomTree.printTree();
