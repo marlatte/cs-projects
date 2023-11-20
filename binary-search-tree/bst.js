@@ -54,20 +54,25 @@ function TreeFactory(arr) {
 		}
 	};
 
-	const find = (key) => {
+	const find = (key, count = false) => {
 		if (isNaN(key)) {
 			return 'Please enter a valid key';
 		}
 		let node = root;
+		let depth = 0;
 		while (node && key !== node.data) {
 			if (key < node.data) {
 				node = node.left;
 			} else if (key > node.data) {
 				node = node.right;
 			}
+			depth++;
 		}
-
-		return node ? node : `Node with key "${key}" not found.`;
+		if (count) {
+			return depth;
+		} else {
+			return node ? node : `Node with key "${key}" not found.`;
+		}
 	};
 
 	const levelOrder = (cb) => {
@@ -142,9 +147,14 @@ function TreeFactory(arr) {
 		}
 	};
 
-	const height = (targetNode) => {};
+	const height = (node) => {
+		if (!node) return -1;
+		return Math.max(height(node.left), height(node.right)) + 1;
+	};
 
-	const depth = (targetNode) => {};
+	const depth = (targetNode) => {
+		return find(targetNode.data, true);
+	};
 
 	const isBalanced = () => {};
 
@@ -160,6 +170,8 @@ function TreeFactory(arr) {
 		preOrder,
 		inOrder,
 		postOrder,
+		height,
+		depth,
 	};
 }
 
