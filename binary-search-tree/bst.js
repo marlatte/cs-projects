@@ -32,7 +32,7 @@ function TreeFactory(arr) {
 			: Math.max(leftHeight, rightHeight) + 1;
 	};
 
-	const root = _buildTree(arr);
+	let root = _buildTree(arr);
 
 	const insert = (key, node = root) => {
 		if (isNaN(key)) return 'Please enter a valid key';
@@ -121,14 +121,9 @@ function TreeFactory(arr) {
 	const preOrder = (cb, node = root) => {
 		if (!node) return;
 		if (!cb) {
-			const output = [];
-			const spread = [
-				node.data,
-				preOrder(cb, node.left),
-				preOrder(cb, node.right),
-			];
-			output.push(...spread);
-			return output.filter((val) => val).flat();
+			return [node.data, preOrder(cb, node.left), preOrder(cb, node.right)]
+				.flat()
+				.filter((val) => !isNaN(val));
 		} else {
 			cb(node);
 			preOrder(cb, node.left);
@@ -139,14 +134,9 @@ function TreeFactory(arr) {
 	const inOrder = (cb, node = root) => {
 		if (!node) return;
 		if (!cb) {
-			const output = [];
-			const spread = [
-				inOrder(cb, node.left),
-				node.data,
-				inOrder(cb, node.right),
-			];
-			output.push(...spread);
-			return output.filter((val) => val).flat();
+			return [inOrder(cb, node.left), node.data, inOrder(cb, node.right)]
+				.flat()
+				.filter((val) => !isNaN(val));
 		} else {
 			inOrder(cb, node.left);
 			cb(node);
@@ -157,14 +147,9 @@ function TreeFactory(arr) {
 	const postOrder = (cb, node = root) => {
 		if (!node) return;
 		if (!cb) {
-			const output = [];
-			const spread = [
-				postOrder(cb, node.left),
-				postOrder(cb, node.right),
-				node.data,
-			];
-			output.push(...spread);
-			return output.filter((val) => val).flat();
+			return [postOrder(cb, node.left), postOrder(cb, node.right), node.data]
+				.flat()
+				.filter((val) => !isNaN(val));
 		} else {
 			postOrder(cb, node.left);
 			postOrder(cb, node.right);
@@ -185,7 +170,9 @@ function TreeFactory(arr) {
 		return _balanceHeight() !== -1;
 	};
 
-	const rebalance = () => {};
+	const rebalance = () => {
+		root = _buildTree(inOrder());
+	};
 
 	return {
 		root,
@@ -200,6 +187,7 @@ function TreeFactory(arr) {
 		height,
 		depth,
 		isBalanced,
+		rebalance,
 	};
 }
 
