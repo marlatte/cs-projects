@@ -212,14 +212,53 @@ function arrayGenerator(len) {
 	return [...output].sort((a, b) => a - b);
 }
 
-const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const testTree = TreeFactory(testArray);
-console.log('\nTest Tree from: ');
-console.log(testArray);
-testTree.printTree();
+function createTestTree() {
+	const testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+	const testTree = TreeFactory(testArray);
+	console.log('\nTest Tree from: ');
+	console.log(testArray);
+	testTree.printTree();
+	return testTree;
+}
 
-// const randomArray = arrayGenerator(10);
-// const randomTree = TreeFactory(randomArray);
-// console.log('\nRandom Tree from:');
-// console.log(randomArray);
-// randomTree.printTree();
+// Create and display a random tree
+const randomArray = arrayGenerator(10);
+const randomTree = TreeFactory(randomArray);
+console.log('\nRandom Tree from:');
+console.log(randomArray);
+randomTree.printTree();
+console.log(`Tree is: ${randomTree.isBalanced() ? 'balanced' : 'NOT balanced'}`);
+
+// Test traversal methods
+console.log('\nLevel Order:');
+console.log(randomTree.levelOrder());
+console.log('\nPre Order:');
+console.log(randomTree.preOrder());
+console.log('\nIn Order:');
+console.log(randomTree.inOrder());
+console.log('\nPost Order:');
+console.log(randomTree.postOrder());
+
+// Unbalance the tree
+const unbalancers = arrayGenerator(10)
+	.map((num) => num + 101)
+	.forEach((num) => {
+		randomTree.insert(num);
+	});
+randomTree.printTree();
+console.log(`Tree is: ${randomTree.isBalanced() ? 'balanced' : 'NOT balanced'}`);
+
+// Rebalance it
+randomTree.rebalance();
+randomTree.printTree();
+console.log(`Tree is: ${randomTree.isBalanced() ? 'balanced' : 'NOT balanced'}`);
+
+// Test traversal methods after rebalance
+console.log('\nLevel Order:');
+console.log(randomTree.levelOrder());
+console.log('\nPre Order:');
+console.log(randomTree.preOrder());
+console.log('\nIn Order:');
+console.log(randomTree.inOrder());
+console.log('\nPost Order:');
+console.log(randomTree.postOrder());
