@@ -31,10 +31,10 @@ Store it as a dictionary:
 
 When knightMoves(start, end) is called,
 	- initiate queue[start]
-	- let current = queue.shift()
+	- let step = queue.shift()
 	- initiate i = 0
-	- while (current !== end && i < 64)
-		- add all connected nodes of dictionary[current] to queue
+	- while (step !== end && i < 64)
+		- add all connected nodes of dictionary[step] to queue
 		- i++
 	- return i
 
@@ -42,11 +42,27 @@ When knightMoves(start, end) is called,
 
 const Gameboard = (dim) => {
 	const obj = {};
-	for (let i = 0; i < dim; i++) {
-		for (let j = 0; j < dim; j++) {
-			const coord = [i, j];
-			const neighbors = [];
-			// Check all variations of moves and add appropriate ones to neighbors
+	for (let x = 0; x < dim; x++) {
+		for (let y = 0; y < dim; y++) {
+			const coord = [x, y];
+			const neighbors = [
+				[2, 1],
+				[1, 2],
+				[-1, 2],
+				[-2, 1],
+				[-2, -1],
+				[-1, -2],
+				[1, -2],
+				[2, -1],
+			]
+				.map((coordShift) => [coordShift[0] + x, coordShift[1] + y])
+				.filter(
+					(pair) =>
+						pair[0] >= 0 &&
+						pair[0] < dim &&
+						pair[1] >= 0 &&
+						pair[1] < dim
+				);
 
 			obj[coord] = neighbors;
 		}
@@ -54,66 +70,32 @@ const Gameboard = (dim) => {
 	return obj;
 };
 
-// [
-// 	[
-// 		[0, 0],
-// 		[
-// 			[1, 2],
-// 			[2, 1],
-// 		],
-// 	],
-// 	[
-// 		[0, 1],
-// 		[
-// 			[2, 0],
-// 			[2, 2],
-// 		],
-// 	],
-// 	[
-// 		[0, 2],
-// 		[
-// 			[2, 1],
-// 			[1, 0],
-// 		],
-// 	],
-// 	[
-// 		[1, 0],
-// 		[
-// 			[2, 2],
-// 			[0, 2],
-// 		],
-// 	],
-// 	[[1, 1], []],
-// 	[
-// 		[1, 2],
-// 		[
-// 			[0, 0],
-// 			[2, 0],
-// 		],
-// 	],
-// 	[
-// 		[2, 0],
-// 		[
-// 			[1, 2],
-// 			[0, 1],
-// 		],
-// 	],
-// 	[
-// 		[2, 1],
-// 		[
-// 			[0, 2],
-// 			[0, 0],
-// 		],
-// 	],
-// 	[
-// 		[2, 2],
-// 		[
-// 			[0, 1],
-// 			[1, 0],
-// 		],
-// 	],
-// ].forEach((pair) => (Gameboard[pair[0]] = pair[1]));
-
 const board = Gameboard(3);
 
 console.log(board);
+
+function knightMoves(start, end) {
+	debugger;
+	const Q = [];
+	Q.push([start]);
+	let i = 0;
+
+	const getMatch = (step) => {
+		return step.filter((current) => current.join(',') === end.join(','));
+	};
+
+	while (i < 64) {
+		let step = Q.shift();
+		const isMatch = getMatch(step);
+		if (isMatch.length) {
+			return i;
+		} else {
+			Q.push(board[step]);
+			i++;
+		}
+	}
+}
+
+let result = knightMoves([0, 0], [1, 2]);
+
+console.log(result);
