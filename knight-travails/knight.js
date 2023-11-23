@@ -30,18 +30,22 @@ Store it as a dictionary:
 
 
 When knightMoves(start, end) is called,
-	- initiate queue[start]
-	- let step = queue.shift()
-	- initiate i = 0
-	- while (step !== end && i < 64)
-		- add all connected nodes of dictionary[step] to queue
-		- i++
-	- return i
+	IF start === end return end
+	Initiate Q, push start
+	WHILE i < 64
+		parent = Q.shift()
+		IF parent contains end
+			output.push(end, knightMoves(start, parent))
+			return output
+		ELSE
+			Q.push(board[parent]);
+			i++;
+		return
 
 */
 
 const Gameboard = (dim) => {
-	const obj = {};
+	const coordMap = {};
 	for (let x = 0; x < dim; x++) {
 		for (let y = 0; y < dim; y++) {
 			const coord = [x, y];
@@ -64,38 +68,54 @@ const Gameboard = (dim) => {
 						pair[1] < dim
 				);
 
-			obj[coord] = neighbors;
+			coordMap[coord] = neighbors;
 		}
 	}
-	return obj;
+
+	const idLookup = {};
+	let i = 0;
+	Object.keys(coordMap).forEach((key) => (idLookup[key] = i++));
+
+	const idMap = {};
+	Object.entries(coordMap).forEach((pair) => {
+		idMap[idLookup[pair[0]]] = pair[1].map((coord) => idLookup[coord]);
+	});
+	debugger;
+
+	return { coordMap, idLookup, idMap };
 };
 
-const board = Gameboard(3);
+const board = Gameboard(8);
 
 console.log(board);
+console.log(Object.keys(board));
 
 function knightMoves(start, end) {
 	debugger;
+	if (start === end) return [start];
 	const Q = [];
-	Q.push([start]);
+	Q.push(start);
 	let i = 0;
-
-	const getMatch = (step) => {
-		return step.filter((current) => current.join(',') === end.join(','));
-	};
+	const output = [];
+	const checked = [];
 
 	while (i < 64) {
-		let step = Q.shift();
-		const isMatch = getMatch(step);
-		if (isMatch.length) {
-			return i;
+		let parent = Q.shift();
+		let children = board[parent];
+		let childMatch = children.filter(
+			(child) => child.join(',') === end.join(',')
+		);
+		if (childMatch.length) {
+			output.push(end, ...knightMoves(start, parent));
+			return output;
 		} else {
-			Q.push(board[step]);
+			checked.push(parent);
+			// let checkNext = children.filter(child => )
+			Q.push(...children);
 			i++;
 		}
 	}
 }
 
-let result = knightMoves([0, 0], [1, 2]);
-
-console.log(result);
+// let result = knightMoves([0, 0], [7, 7]);
+// console.log(result);
