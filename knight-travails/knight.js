@@ -47,7 +47,7 @@ function knightMoves(start, end) {
 		.reverse()
 		.map((id) => `[${board.coordLookup[id]}]`);
 
-	let output = `You made it in ${path.length} moves! Here's your path:`;
+	let output = `You made it in ${path.length - 1} moves! Here's your path:`;
 	path.forEach((step) => {
 		output += '\n';
 
@@ -62,8 +62,7 @@ function knightMoves(start, end) {
 
 function knightMovesID(start, end) {
 	if (start === end) return [start];
-	const Q = [];
-	Q.push(start);
+	const Q = [start];
 	let i = 0;
 	const output = [];
 	const checked = [];
