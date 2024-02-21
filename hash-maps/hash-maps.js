@@ -11,6 +11,7 @@ class HashMap {
 
   constructor() {
     this.map = [];
+    this.map.length = this.#CAPACITY;
   }
 
   hash(key) {
@@ -43,13 +44,32 @@ class HashMap {
   get(key) {
     const getterIndex = this.hash(key);
     let node = this.map[getterIndex];
-    let i = 0;
     while (node) {
       if (node.item.key === key) return node; // final version returns node.item.value
       node = node.next;
-      i++;
     }
     return null;
+  }
+
+  has(key) {
+    return Boolean(this.get(key));
+  }
+
+  remove(key) {
+    const removeIndex = this.hash(key);
+    let node = this.map[removeIndex];
+    let isRoot = true;
+    while (node) {
+      if (isRoot && node.item.key === key) {
+        this.map[removeIndex] = node.next;
+        return true;
+      } else if (node.next?.item.key === key) {
+        node.next = node.next.next;
+      }
+      node = node.next;
+      isRoot = false;
+    }
+    return false;
   }
 }
 
@@ -65,3 +85,12 @@ test2;
 myMap.set('ih', 'collision value');
 const test3 = myMap.get('ih');
 test3;
+
+const test4 = myMap.has('hi');
+test4;
+
+const test5 = myMap.map;
+test5;
+const test6 = myMap.remove('ih');
+test6;
+test5;
