@@ -71,26 +71,89 @@ class HashMap {
     }
     return false;
   }
+
+  length() {
+    let length = 0;
+    this.map.filter(Boolean).forEach((node) => {
+      while (node) {
+        length += 1;
+        node = node.next;
+      }
+    });
+
+    return length;
+  }
+
+  clear() {
+    this.map = [];
+    this.map.length = this.#CAPACITY;
+    return this.length();
+  }
+
+  keys() {
+    const keys = [];
+    this.map.filter(Boolean).forEach((node) => {
+      while (node) {
+        keys.push(node.item.key);
+        node = node.next;
+      }
+    });
+    return keys;
+  }
+
+  values() {
+    const values = [];
+    this.map.filter(Boolean).forEach((node) => {
+      while (node) {
+        values.push(node.item.value);
+        node = node.next;
+      }
+    });
+    return values;
+  }
+
+  entries() {
+    const entries = [];
+    this.map.filter(Boolean).forEach((node) => {
+      while (node) {
+        entries.push([node.item.key, node.item.value]);
+        node = node.next;
+      }
+    });
+    return entries;
+  }
 }
 
 const myMap = new HashMap();
 myMap.set('hi', 'initial value');
-const test1 = myMap.get('hi');
-test1;
+const initialTest = myMap.get('hi');
+initialTest;
 
-myMap.set('hi', 'new value');
-const test2 = myMap.get('hi');
-test2;
+myMap.set('hi', 'replace value');
+const replaceTest = myMap.get('hi');
+replaceTest;
 
 myMap.set('ih', 'collision value');
-const test3 = myMap.get('ih');
-test3;
+const collisionTest = myMap.get('ih');
+collisionTest;
 
-const test4 = myMap.has('hi');
-test4;
+console.log(myMap.has('hi'));
+console.log(myMap.length());
 
-const test5 = myMap.map;
-test5;
-const test6 = myMap.remove('ih');
-test6;
-test5;
+myMap.set('new', 'a third value');
+console.log(myMap.length());
+
+console.log(myMap.keys());
+console.log(myMap.values());
+console.log(myMap.entries());
+
+const currentMap = myMap.map;
+currentMap;
+const removeTest = myMap.remove('ih');
+removeTest;
+currentMap;
+
+console.log(myMap.length());
+
+console.log(myMap.clear());
+console.log(myMap.map);
