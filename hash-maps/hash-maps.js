@@ -8,44 +8,66 @@ class Node {
 class HashMap {
   #CAPACITY = 16;
   #LOAD_FACTOR = 0.75;
+  #CheckOutOfBounds(index) {
+    if (index < 0 || index >= this.buckets.length) {
+      throw new Error('Trying to access index out of bound');
+    }
+  }
+  #Resize() {
+    this.buckets.length *= 2;
+  }
+  #CheckCapacity() {
+    debugger;
+    if (
+      this.buckets.filter(Boolean).length >=
+      this.buckets.length * this.#LOAD_FACTOR
+    ) {
+      this.#Resize();
+    }
+  }
 
-  constructor() {
-    this.map = [];
-    this.map.length = this.#CAPACITY;
+  constructor(fullVersion = false) {
+    this.buckets = [];
+    this.buckets.length = this.#CAPACITY;
+    this.fullVersion = fullVersion;
   }
 
   hash(key) {
     let hashCode = 0;
 
-    // const primeNumber = 31;
+    const primeNumber = this.fullVersion ? 31 : 1;
     for (let i = 0; i < key.length; i++) {
       hashCode =
-        /*primeNumber * */ (hashCode + key.charCodeAt(i)) % this.#CAPACITY;
+        (primeNumber * (hashCode + key.charCodeAt(i))) % this.#CAPACITY;
     }
 
-    hashCode;
+    this.#CheckOutOfBounds(hashCode);
     return hashCode;
   }
 
   set(key, value) {
     const setterIndex = this.hash(key);
-    const current = this.map[setterIndex];
+    const current = this.buckets[setterIndex];
+
+    this.#CheckCapacity();
+
     if (!current) {
-      this.map[setterIndex] = new Node({ key, value });
+      this.buckets[setterIndex] = new Node({ key, value });
     } else if (current.item.key === key) {
-      this.map[setterIndex].item.value = value;
+      this.buckets[setterIndex].item.value = value;
     } else {
       const temp = new Node({ key, value });
-      temp.next = this.map[setterIndex];
-      this.map[setterIndex] = temp;
+      temp.next = this.buckets[setterIndex];
+      this.buckets[setterIndex] = temp;
     }
   }
 
   get(key) {
     const getterIndex = this.hash(key);
-    let node = this.map[getterIndex];
+    let node = this.buckets[getterIndex];
     while (node) {
-      if (node.item.key === key) return node; // final version returns node.item.value
+      if (node.item.key === key)
+        return this.fullVersion ? node.item.value : node;
       node = node.next;
     }
     return null;
@@ -57,11 +79,11 @@ class HashMap {
 
   remove(key) {
     const removeIndex = this.hash(key);
-    let node = this.map[removeIndex];
+    let node = this.buckets[removeIndex];
     let isRoot = true;
     while (node) {
       if (isRoot && node.item.key === key) {
-        this.map[removeIndex] = node.next;
+        this.buckets[removeIndex] = node.next;
         return true;
       } else if (node.next?.item.key === key) {
         node.next = node.next.next;
@@ -74,7 +96,7 @@ class HashMap {
 
   length() {
     let length = 0;
-    this.map.filter(Boolean).forEach((node) => {
+    this.buckets.filter(Boolean).forEach((node) => {
       while (node) {
         length += 1;
         node = node.next;
@@ -85,14 +107,14 @@ class HashMap {
   }
 
   clear() {
-    this.map = [];
-    this.map.length = this.#CAPACITY;
+    this.buckets = [];
+    this.buckets.length = this.#CAPACITY;
     return this.length();
   }
 
   keys() {
     const keys = [];
-    this.map.filter(Boolean).forEach((node) => {
+    this.buckets.filter(Boolean).forEach((node) => {
       while (node) {
         keys.push(node.item.key);
         node = node.next;
@@ -103,7 +125,7 @@ class HashMap {
 
   values() {
     const values = [];
-    this.map.filter(Boolean).forEach((node) => {
+    this.buckets.filter(Boolean).forEach((node) => {
       while (node) {
         values.push(node.item.value);
         node = node.next;
@@ -114,7 +136,7 @@ class HashMap {
 
   entries() {
     const entries = [];
-    this.map.filter(Boolean).forEach((node) => {
+    this.buckets.filter(Boolean).forEach((node) => {
       while (node) {
         entries.push([node.item.key, node.item.value]);
         node = node.next;
@@ -147,7 +169,7 @@ console.log(myMap.keys());
 console.log(myMap.values());
 console.log(myMap.entries());
 
-const currentMap = myMap.map;
+const currentMap = myMap.buckets;
 currentMap;
 const removeTest = myMap.remove('ih');
 removeTest;
@@ -156,4 +178,33 @@ currentMap;
 console.log(myMap.length());
 
 console.log(myMap.clear());
-console.log(myMap.map);
+console.log(myMap.buckets);
+
+const fullMap = new HashMap(true);
+[
+  'tuxedo',
+  'Navajo',
+  'zeta',
+  'orange',
+  'Madrid',
+  'cantankerous',
+  'Pluto',
+  'zirconium',
+  'eclipse',
+  'ground',
+  'voracious',
+  'lonely',
+  'goof',
+  'doubleWide',
+  'regret',
+  'masterChief',
+  'quotidian',
+  '',
+  'fa',
+  'arsene',
+].forEach((word) => {
+  fullMap.set(word, `${word}, but as a value`);
+});
+
+// Above forEach should push array length to 32
+console.log(fullMap.buckets.length, fullMap.buckets.filter(Boolean).length);
